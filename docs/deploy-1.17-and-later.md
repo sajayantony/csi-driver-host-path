@@ -32,9 +32,9 @@ Run the following commands to install these components:
 $ SNAPSHOTTER_VERSION=v2.0.1
 
 # Apply VolumeSnapshot CRDs
-$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/${SNAPSHOTTER_VERSION}/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/${SNAPSHOTTER_VERSION}/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
-$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/${SNAPSHOTTER_VERSION}/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/${SNAPSHOTTER_VERSION}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/${SNAPSHOTTER_VERSION}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/${SNAPSHOTTER_VERSION}/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
 
 # Create snapshot controller
 $ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/${SNAPSHOTTER_VERSION}/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
@@ -56,81 +56,94 @@ result of deploying the hostpath driver, external provisioner, external attacher
 
 ```shell
 applying RBAC rules
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-provisioner/v1.5.0/deploy/kubernetes/rbac.yaml
+curl https://raw.githubusercontent.com/kubernetes-csi/external-provisioner/v3.3.0/deploy/kubernetes/rbac.yaml --output /tmp/tmp.KEz8dfjdB0/rbac.yaml --silent --location
+kubectl apply --kustomize /tmp/tmp.KEz8dfjdB0
 serviceaccount/csi-provisioner created
-clusterrole.rbac.authorization.k8s.io/external-provisioner-runner created
-clusterrolebinding.rbac.authorization.k8s.io/csi-provisioner-role created
 role.rbac.authorization.k8s.io/external-provisioner-cfg created
+clusterrole.rbac.authorization.k8s.io/external-provisioner-runner created
 rolebinding.rbac.authorization.k8s.io/csi-provisioner-role-cfg created
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-attacher/v2.1.0/deploy/kubernetes/rbac.yaml
+clusterrolebinding.rbac.authorization.k8s.io/csi-provisioner-role created
+curl https://raw.githubusercontent.com/kubernetes-csi/external-attacher/v4.0.0/deploy/kubernetes/rbac.yaml --output /tmp/tmp.KEz8dfjdB0/rbac.yaml --silent --location
+kubectl apply --kustomize /tmp/tmp.KEz8dfjdB0
 serviceaccount/csi-attacher created
-clusterrole.rbac.authorization.k8s.io/external-attacher-runner created
-clusterrolebinding.rbac.authorization.k8s.io/csi-attacher-role created
 role.rbac.authorization.k8s.io/external-attacher-cfg created
+clusterrole.rbac.authorization.k8s.io/external-attacher-runner created
 rolebinding.rbac.authorization.k8s.io/csi-attacher-role-cfg created
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v2.0.1/deploy/kubernetes/csi-snapshotter/rbac-csi-snapshotter.yaml
+clusterrolebinding.rbac.authorization.k8s.io/csi-attacher-role created
+curl https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v6.1.0/deploy/kubernetes/csi-snapshotter/rbac-csi-snapshotter.yaml --output /tmp/tmp.KEz8dfjdB0/rbac.yaml --silent --location
+kubectl apply --kustomize /tmp/tmp.KEz8dfjdB0
 serviceaccount/csi-snapshotter created
-clusterrole.rbac.authorization.k8s.io/external-snapshotter-runner created
-clusterrolebinding.rbac.authorization.k8s.io/csi-snapshotter-role created
 role.rbac.authorization.k8s.io/external-snapshotter-leaderelection created
+clusterrole.rbac.authorization.k8s.io/external-snapshotter-runner created
 rolebinding.rbac.authorization.k8s.io/external-snapshotter-leaderelection created
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-resizer/v0.4.0/deploy/kubernetes/rbac.yaml
+clusterrolebinding.rbac.authorization.k8s.io/csi-snapshotter-role created
+curl https://raw.githubusercontent.com/kubernetes-csi/external-resizer/v1.6.0/deploy/kubernetes/rbac.yaml --output /tmp/tmp.KEz8dfjdB0/rbac.yaml --silent --location
+kubectl apply --kustomize /tmp/tmp.KEz8dfjdB0
 serviceaccount/csi-resizer created
-clusterrole.rbac.authorization.k8s.io/external-resizer-runner created
-clusterrolebinding.rbac.authorization.k8s.io/csi-resizer-role created
 role.rbac.authorization.k8s.io/external-resizer-cfg created
+clusterrole.rbac.authorization.k8s.io/external-resizer-runner created
 rolebinding.rbac.authorization.k8s.io/csi-resizer-role-cfg created
+clusterrolebinding.rbac.authorization.k8s.io/csi-resizer-role created
+curl https://raw.githubusercontent.com/kubernetes-csi/external-health-monitor/v0.7.0/deploy/kubernetes/external-health-monitor-controller/rbac.yaml --output /tmp/tmp.KEz8dfjdB0/rbac.yaml --silent --location
+kubectl apply --kustomize /tmp/tmp.KEz8dfjdB0
+serviceaccount/csi-external-health-monitor-controller created
+role.rbac.authorization.k8s.io/external-health-monitor-controller-cfg created
+clusterrole.rbac.authorization.k8s.io/external-health-monitor-controller-runner created
+rolebinding.rbac.authorization.k8s.io/csi-external-health-monitor-controller-role-cfg created
+clusterrolebinding.rbac.authorization.k8s.io/csi-external-health-monitor-controller-role created
 deploying hostpath components
-   deploy/kubernetes-latest/hostpath/csi-hostpath-attacher.yaml
-        using           image: quay.io/k8scsi/csi-attacher:v2.1.0
-service/csi-hostpath-attacher created
-statefulset.apps/csi-hostpath-attacher created
-   deploy/kubernetes-latest/hostpath/csi-hostpath-driverinfo.yaml
+  deploy/kubernetes-latest/hostpath/csi-hostpath-driverinfo.yaml
 csidriver.storage.k8s.io/hostpath.csi.k8s.io created
-   deploy/kubernetes-latest/hostpath/csi-hostpath-plugin.yaml
-        using           image: quay.io/k8scsi/csi-node-driver-registrar:v1.2.0
-        using           image: quay.io/k8scsi/hostpathplugin:v1.3.0
-        using           image: quay.io/k8scsi/livenessprobe:v1.1.0
-service/csi-hostpathplugin created
+  deploy/kubernetes-latest/hostpath/csi-hostpath-plugin.yaml
+        using           image: registry.k8s.io/sig-storage/hostpathplugin:v1.9.0
+        using           image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.7.0
+        using           image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.6.0
+        using           image: registry.k8s.io/sig-storage/livenessprobe:v2.8.0
+        using           image: registry.k8s.io/sig-storage/csi-attacher:v4.0.0
+        using           image: registry.k8s.io/sig-storage/csi-provisioner:v3.3.0
+        using           image: registry.k8s.io/sig-storage/csi-resizer:v1.6.0
+        using           image: registry.k8s.io/sig-storage/csi-snapshotter:v6.1.0
+serviceaccount/csi-hostpathplugin-sa created
+clusterrolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-attacher-cluster-role created
+clusterrolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-health-monitor-controller-cluster-role created
+clusterrolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-provisioner-cluster-role created
+clusterrolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-resizer-cluster-role created
+clusterrolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-snapshotter-cluster-role created
+rolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-attacher-role created
+rolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-health-monitor-controller-role created
+rolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-provisioner-role created
+rolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-resizer-role created
+rolebinding.rbac.authorization.k8s.io/csi-hostpathplugin-snapshotter-role created
 statefulset.apps/csi-hostpathplugin created
-   deploy/kubernetes-latest/hostpath/csi-hostpath-provisioner.yaml
-        using           image: quay.io/k8scsi/csi-provisioner:v1.5.0
-service/csi-hostpath-provisioner created
-statefulset.apps/csi-hostpath-provisioner created
-   deploy/kubernetes-latest/hostpath/csi-hostpath-resizer.yaml
-        using           image: quay.io/k8scsi/csi-resizer:v0.4.0
-service/csi-hostpath-resizer created
-statefulset.apps/csi-hostpath-resizer created
-   deploy/kubernetes-latest/hostpath/csi-hostpath-snapshotter.yaml
-        using           image: quay.io/k8scsi/csi-snapshotter:v2.0.1
-service/csi-hostpath-snapshotter created
-statefulset.apps/csi-hostpath-snapshotter created
-   deploy/kubernetes-latest/hostpath/csi-hostpath-testing.yaml
-        using           image: alpine/socat:1.0.3
+  deploy/kubernetes-latest/hostpath/csi-hostpath-snapshotclass.yaml
+volumesnapshotclass.snapshot.storage.k8s.io/csi-hostpath-snapclass created
+  deploy/kubernetes-latest/hostpath/csi-hostpath-testing.yaml
+        using           image: docker.io/alpine/socat:1.7.4.3-r0
 service/hostpath-service created
 statefulset.apps/csi-hostpath-socat created
-11:37:57 waiting for hostpath deployment to complete, attempt #0
-11:38:07 waiting for hostpath deployment to complete, attempt #1
-deploying snapshotclass based on snapshotter version
-volumesnapshotclass.snapshot.storage.k8s.io/csi-hostpath-snapclass created
+00:51:03 waiting for hostpath deployment to complete, attempt #0
+00:51:13 waiting for hostpath deployment to complete, attempt #1
 ```
 
 The [livenessprobe side-container](https://github.com/kubernetes-csi/livenessprobe) provided by the CSI community is deployed with the CSI driver to provide the liveness checking of the CSI services.
 
 ## Run example application and validate
 
-Next, validate the deployment.  First, ensure all expected pods are running properly including the external attacher, provisioner, snapshotter and the actual hostpath driver plugin:
+Next, validate the deployment.  First, ensure all expected pods are running properly including snapshotter and the actual hostpath driver plugin:
 
 ```shell
-$ kubectl get pods
-NAME                         READY   STATUS    RESTARTS   AGE
-csi-hostpath-attacher-0      1/1     Running   0          4m21s
-csi-hostpath-provisioner-0   1/1     Running   0          4m19s
-csi-hostpath-resizer-0       1/1     Running   0          4m19s
-csi-hostpath-snapshotter-0   1/1     Running   0          4m18s
-csi-hostpath-socat-0         1/1     Running   0          4m18s
-csi-hostpathplugin-0         3/3     Running   0          4m20s
-snapshot-controller-0        1/1     Running   0          4m37s
+# See if the snapshot controller is running
+$ kubectl get pods -l 'app=snapshot-controller' --all-namespaces
+NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE
+kube-system   snapshot-controller-75bc9977bf-6j6s9   1/1     Running   0          20m
+kube-system   snapshot-controller-75bc9977bf-bkc9c   1/1     Running   0          20m
+
+# See if the hostpath driver is running
+$ kubectl get pods -l 'app.kubernetes.io/part-of=csi-driver-host-path' --all-namespaces
+NAMESPACE   NAME                   READY   STATUS    RESTARTS   AGE
+default     csi-hostpath-socat-0   1/1     Running   0          20m
+default     csi-hostpathplugin-0   8/8     Running   0          20m
+
 ```
 
 From the root directory, deploy the application pods including a storage class, a PVC, and a pod which mounts a volume using the Hostpath driver found in directory `./examples`:
@@ -145,13 +158,14 @@ pod/my-csi-app created
 Let's validate the components are deployed:
 
 ```shell
-$ kubectl get pv
+❯ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS      REASON   AGE
-pvc-ad827273-8d08-430b-9d5a-e60e05a2bc3e   1Gi        RWO            Delete           Bound    default/csi-pvc   csi-hostpath-sc            45s
+pvc-d4ed9b43-d16c-4c2b-8180-dbf7fd7c1766   1Gi        RWO            Delete           Bound    default/csi-pvc   csi-hostpath-sc            45s 
 
-$ kubectl get pvc
+
+❯ kubectl get pvc
 NAME      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      AGE
-csi-pvc   Bound    pvc-ad827273-8d08-430b-9d5a-e60e05a2bc3e   1Gi        RWO            csi-hostpath-sc   94s
+csi-pvc   Bound    pvc-d4ed9b43-d16c-4c2b-8180-dbf7fd7c1766   1Gi        RWO            csi-hostpath-sc   117s
 ```
 
 Finally, inspect the application pod `my-csi-app`  which mounts a Hostpath volume:
@@ -231,8 +245,7 @@ $ kubectl exec -it my-csi-app /bin/sh
 
 Next, ssh into the Hostpath container and verify that the file shows up there:
 ```shell
-$ kubectl exec -it $(kubectl get pods --selector app=csi-hostpathplugin -o jsonpath='{.items[*].metadata.name}') -c hostpath /bin/sh
-
+$ kubectl exec -it $( kubectl get pods --selector app.kubernetes.io/name=csi-hostpathplugin  -o jsonpath='{.items[*].metadata.name}') -c hostpath -- /bin/sh
 ```
 Then, use the following command to locate the file. If everything works OK you should get a result similar to the following:
 
@@ -248,22 +261,42 @@ An additional way to ensure the driver is working properly is by inspecting the 
 
 ```shell
 $ kubectl describe volumeattachment
-Name:         csi-5f182b564c52cd52e04e148a1feef00d470155e051924893d3aee8c3b26b8471
-Namespace:    
+Name:         csi-56992e840108cb4e50a1146ca1938487ed33260232609d73141d4210247a5834
+Namespace:
 Labels:       <none>
 Annotations:  <none>
 API Version:  storage.k8s.io/v1
 Kind:         VolumeAttachment
 Metadata:
-  Creation Timestamp:  2020-03-09T21:38:05Z
-  Resource Version:    10119
-  Self Link:           /apis/storage.k8s.io/v1/volumeattachments/csi-5f182b564c52cd52e04e148a1feef00d470155e051924893d3aee8c3b26b8471
-  UID:                 2d28d7e4-cda1-4ba9-a8fc-56fe081d71e9
+  Creation Timestamp:  2023-03-28T01:12:45Z
+  Managed Fields:
+    API Version:  storage.k8s.io/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+        f:attached:
+    Manager:      csi-attacher
+    Operation:    Update
+    Subresource:  status
+    Time:         2023-03-28T01:12:45Z
+    API Version:  storage.k8s.io/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        f:attacher:
+        f:nodeName:
+        f:source:
+          f:persistentVolumeName:
+    Manager:         kube-controller-manager
+    Operation:       Update
+    Time:            2023-03-28T01:12:45Z
+  Resource Version:  13252
+  UID:               ed74b1fc-e98e-4ddc-864f-92dc3d73ea64
 Spec:
   Attacher:   hostpath.csi.k8s.io
-  Node Name:  csi-prow-worker
+  Node Name:  aks-nodepool1-35952333-vmss000000
   Source:
-    Persistent Volume Name:  pvc-ad827273-8d08-430b-9d5a-e60e05a2bc3e
+    Persistent Volume Name:  pvc-d4ed9b43-d16c-4c2b-8180-dbf7fd7c1766
 Status:
   Attached:  true
 Events:      <none>
