@@ -7,9 +7,19 @@ import com.sun.net.httpserver.HttpServer;
 
 public class HelloWorldServer {
     public static void main(String[] args) throws Exception {
+        
+        // ParseInt port from PORT env if defined
+        int port = 8080;
+        if (System.getenv("PORT") != null) {
+            port = Integer.parseInt(System.getenv("PORT"));
+        }
+    
+        System.out.println("Starting server on port " + port); 
+
         HttpServer server = HttpServer.create();
+        
         // Bind to port 8080 on localhost
-        server.bind(new InetSocketAddress(8080), 0);
+        server.bind(new InetSocketAddress(port), 0);
         server.createContext("/", new MyHandler());
         server.start();
     }

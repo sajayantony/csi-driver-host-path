@@ -108,7 +108,7 @@ func NewHostPathDriver(cfg Config) (*hostPath, error) {
 
 	glog.Infof("Driver: %v ", cfg.DriverName)
 	glog.Infof("Version: %s", cfg.VendorVersion)
-
+	glog.Infof("OCI-Mounter")
 	s, err := state.New(path.Join(cfg.StateDir, "state.json"))
 	if err != nil {
 		return nil, err

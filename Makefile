@@ -16,3 +16,5 @@ CMDS=hostpathplugin
 all: build
 
 include release-tools/build.make
+
+REGISTRY_NAME=localhost:5001

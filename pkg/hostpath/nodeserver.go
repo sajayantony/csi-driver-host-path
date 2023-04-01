@@ -23,6 +23,7 @@ import (
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
+	"github.com/kubernetes-csi/csi-driver-host-path/pkg/oci"
 	"github.com/kubernetes-csi/csi-driver-host-path/pkg/state"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -38,6 +39,7 @@ const (
 )
 
 func (hp *hostPath) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
+
 	// Check arguments
 	if req.GetVolumeCapability() == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capability missing in request")
@@ -78,6 +80,7 @@ func (hp *hostPath) NodePublishVolume(ctx context.Context, req *csi.NodePublishV
 			return nil, err
 		}
 		glog.V(4).Infof("ephemeral mode: created volume: %s", vol.VolPath)
+
 	}
 
 	vol, err := hp.state.GetVolumeByID(req.GetVolumeId())
@@ -199,6 +202,14 @@ func (hp *hostPath) NodePublishVolume(ctx context.Context, req *csi.NodePublishV
 	if err := hp.state.UpdateVolume(vol); err != nil {
 		return nil, err
 	}
+
+	// Download the OCI app if the volume attribtues
+	// specify an OCI application to be mounted
+	_, err = oci.GetOciApplication(req.GetVolumeContext(), targetPath)
+	if err != nil {
+		return nil, err
+	}
+
 	return &csi.NodePublishVolumeResponse{}, nil
 }
 

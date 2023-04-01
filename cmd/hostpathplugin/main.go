@@ -107,6 +107,8 @@ func main() {
 		cfg.MaxVolumeExpansionSizeNode = cfg.MaxVolumeSize
 	}
 
+	fmt.Println("Test")
+
 	driver, err := hostpath.NewHostPathDriver(cfg)
 	if err != nil {
 		fmt.Printf("Failed to initialize driver: %s", err.Error())

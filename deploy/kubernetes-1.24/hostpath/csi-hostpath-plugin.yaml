@@ -218,7 +218,9 @@ spec:
       serviceAccountName: csi-hostpathplugin-sa
       containers:
         - name: hostpath
-          image: registry.k8s.io/sig-storage/hostpathplugin:v1.9.0
+        #  image: registry.k8s.io/sig-storage/hostpathplugin:v1.9.0
+          image: localhost:5001/hostpathplugin:oci
+          imagePullPolicy: Always
           args:
             - "--drivername=hostpath.csi.k8s.io"
             - "--v=5"

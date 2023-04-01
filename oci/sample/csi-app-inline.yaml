@@ -1,0 +1,29 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-csi-app-inline
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.hostpath.csi/node
+            operator: Exists
+  containers:
+    - name: my-frontend
+      image: localhost:5001/java-app-base:latest
+      command: [ "java", "-jar", "/app/HelloWorldServer.jar" ]
+      volumeMounts:
+      - mountPath: "/app"
+        name: my-csi-volume
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+  volumes:
+    - name: my-csi-volume
+      csi:
+        driver: hostpath.csi.k8s.io
+        volumeAttributes:
+          oci.application.ref : "kind-registry:5000/java-app:1.0"
